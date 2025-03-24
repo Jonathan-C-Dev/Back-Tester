@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Strategy Backtester</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            height: 100vh;
+            flex-direction: column;
+            padding-left: 40px;
+        }
+
+        h1 {
+            font-size: 30px; /* Adjusted to a reasonable size */
+            margin-bottom: 20px;
+            color: #333;
+            opacity: 0; /* Initially hidden */
+            animation: fadeIn 1.5s ease-out forwards; /* Apply fade-in animation */
+        }
+
+        p {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #666;
+            max-width: 800px;
+            opacity: 0; /* Initially hidden */
+            animation: fadeIn 1.5s ease-out forwards;
+            animation-delay: 0.25s; /* Apply fade-in animation with a delay */
+        }
+
+        .text-wrapper {
+            margin-top: 190px;
+            margin-bottom: -90px;
+            animation: fadeIn 1.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        .link {
+            background-color: #f4f4f4;
+            color: #01b9da; /* Text color */
+            padding: 0 5px; /* Add some padding around the text */
+            border-radius: 10px; /* Optional: rounded corners */
+            transition: background-color 0.3s ease; /* Optional: Smooth transition on hover */
+            text-decoration: none; /* Remove underline */
+            border: 2px solid #01b9da; /* Set the border width and color */
+            animation: fadeIn 1.5s ease-out forwards;
+            opacity: 0;
+        }
+
+
+        /* Change background on hover */
+        .link:hover {
+            background-color: #f4f4f4;
+        }
+
+        /* Prevent link from changing color after being clicked */
+        .link:visited {
+            color: #01b9da; /* Keeps the color the same as when it's unclicked */
+        }
+        
+        .logo-container {
+            position: fixed;
+            top: -40px;
+            left: 80px;
+            z-index: 1100;
+        }
+
+        .logo {
+            height: 190px;
+        }
+
+        .container {
+            background: white;
+            padding: 5px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-direction: column;
+            margin-top: 200px;
+            margin-left: 160px;
+        }
+
+        h1 {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: inline-block;
+            font-weight: bold;
+            margin: 5px 10px;
+        }
+
+        input, select, button {
+            padding: 10px;
+            margin: 0 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #01b9da;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-left: 100px;
+            padding: 15px 80px;
+        }
+
+        button:hover {
+            background-color: #039eb9;
+        }
+
+        .strategy-fields {
+            display: none;
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Navigation bar styling */
+        .navbar {
+            background-color: #ffffff;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 28px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            border-bottom: 2px solid #01b9da; /* Blue line under the navbar */
+        }
+
+        .navbar a {
+            color: rgb(0, 0, 0);
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 0 15px;
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .navbar a:hover {
+            color: #01b9da;
+            transform: translateY(-3px);
+        }
+
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .form-item {
+            margin: 10px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .button-container {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+            margin-right: 600px;
+        }
+
+        .suggestions-box {
+            position: absolute;
+            background: white;
+            border: 1px solid #ccc;
+            width: 100%;
+            max-height: 1500px;
+            overflow-y: auto;
+            display: none;
+            z-index: 10;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            top: 70px;
+        }
+
+        .suggestions-box div {
+            padding: 10px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .suggestions-box div:hover {
+            background: #f0f0f0;
+        }
+
+        .logo-container {
+            position: fixed;
+            top: -40px;
+            left: 80px;
+            z-index: 1100;
+        }
+
+        .logo {
+            height: 190px;
+        }
+
+        .pic {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 370px;
+            height: 370px;
+            z-index: 1000;
+            border-radius: 50%;
+            object-fit: cover;
+            -webkit-mask-image: radial-gradient(circle, black 10%, transparent 100%);
+            mask-image: radial-gradient(circle, black 1%, transparent 100%);
+            opacity: 60%;
+            margin-top: 100px;
+        }
+
+        /* Fade-in animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+    </style>
+    <script>
+        function toggleStrategyFields() {
+            var strategy = document.getElementById("strategy").value;
+            var fields = ["short_window", "long_window", "bollinger_window", "num_std_dev",
+                        "rsi_window", "mean_window", "z_score_threshold", "second_ticker", "pairs_window",
+                        "trend_window", "donchian_window"];
+
+            fields.forEach(field => {
+                var element = document.getElementById(field + "_field");
+                if (element) element.style.display = "none";
+            });
+
+            var showFields = {
+                "moving_average_crossover": ["short_window", "long_window"],
+                "bollinger_bands": ["bollinger_window", "num_std_dev"],
+                "rsi": ["rsi_window"],
+                "mean_reversion": ["mean_window", "z_score_threshold"],
+                "pairs_trading": ["second_ticker", "pairs_window", "z_score_threshold"],
+                "trend_following": ["trend_window"],
+                "donchian_channel": ["donchian_window"]
+            };
+
+            if (showFields[strategy]) {
+                showFields[strategy].forEach(field => {
+                    document.getElementById(field + "_field").style.display = "block";
+                });
+            }
+        }
+
+        function fetchSuggestions(inputId, suggestionsBoxId) {
+            let input = document.getElementById(inputId).value;
+            let suggestionsBox = document.getElementById(suggestionsBoxId);
+
+            if (input.length < 2) {
+                suggestionsBox.style.display = "none";
+                return;
+            }
+
+            fetch(`/search_suggestions?q=${input}`)
+                .then(response => response.json())
+                .then(data => {
+                    suggestionsBox.innerHTML = "";
+                    if (data.length > 0) {
+                        suggestionsBox.style.display = "block";
+                        data.forEach(item => {
+                            let suggestion = document.createElement("div");
+                            suggestion.innerText = `${item.symbol} - ${item.name}`;
+                            suggestion.onclick = () => {
+                                document.getElementById(inputId).value = item.symbol;
+                                suggestionsBox.style.display = "none";
+                            };
+                            suggestionsBox.appendChild(suggestion);
+                        });
+                    } else {
+                        suggestionsBox.style.display = "none";
+                    }
+                })
+                .catch(error => console.error("Error fetching suggestions:", error));
+        }
+
+    </script>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{{ url_for('backtest') }}">Start Backtesting</a>
+        <a href="{{ url_for('guide') }}">Strategy Guide</a>
+        <a href="{{ url_for('market_data') }}">Market Data</a>
+        <a href="{{ url_for('about') }}">About Us</a>
+    </div>
+    
+    <div class="text-wrapper">
+        <h1>Welcome to the GammaForge Trading Strategy Backtester</h1>
+        <p>Test your trading strategies with historical data. Select a strategy, choose your desired date range, and backtest your approach to see how it would have performed in the past.</p>
+        <p>Start by entering a stock symbol or company name, and then select a trading strategy to backtest. You can choose from various strategies, including moving average crossovers, Bollinger Bands, RSI, and more. Refernce our strategy guide for more detials.</p>
+        <a href="{{ url_for('guide') }}" class="link">Strategy Guide</a>
+    </div>
+    <div class="container">
+        <form action="/backtest" method="POST">
+            <div class="form-item">
+                <label for="ticker">Search Symbol or Company:</label>
+                <input type="text" id="ticker" name="ticker" onkeyup="fetchSuggestions('ticker', 'suggestions')" autocomplete="off" required>
+                <div id="suggestions" class="suggestions-box"></div>
+            </div>
+            
+
+            <div class="form-item">
+                <label for="start_date">Start Date:</label>
+                <input type="date" id="start_date" name="start_date" required>
+            </div>
+
+            <div class="form-item">
+                <label for="end_date">End Date:</label>
+                <input type="date" id="end_date" name="end_date" required>
+            </div>
+
+            <div class="form-item">
+                <label for="strategy">Select Strategy:</label>
+                <select name="strategy" id="strategy" onchange="toggleStrategyFields()" required>
+                    <option value="macd">MACD</option>
+                    <option value="moving_average_crossover">Moving Average Crossover</option>
+                    <option value="bollinger_bands">Bollinger Bands</option>
+                    <option value="mean_reversion">Mean Reversion</option>
+                    <option value="rsi">RSI</option>
+                    <option value="pairs_trading">Pairs Trading</option>
+                    <option value="trend_following">Trend Following</option>
+                    <option value="donchian_channel">Donchian Channel</option>
+                </select>
+            </div>
+
+            <div class="strategy-fields" id="second_ticker_field">
+                <div class="form-item">
+                    <label for="second_ticker">Second Ticker:</label>
+                    <input type="text" id="second_ticker" name="second_ticker" onkeyup="fetchSuggestions('second_ticker', 'suggestions2')" autocomplete="off">
+                    <div id="suggestions2" class="suggestions-box"></div>
+                </div>
+            </div>                      
+
+            <div id="short_window_field" class="strategy-fields">
+                <div class="form-item">
+                    <label for="short_window">Short Window:</label>
+                    <input type="number" id="short_window" name="short_window">
+                </div>
+            </div>
+            <div id="long_window_field" class="strategy-fields">
+                <div class="form-item">
+                    <label for="long_window">Long Window:</label>
+                    <input type="number" id="long_window" name="long_window">
+                </div>
+            </div>
+
+            <div id="bollinger_window_field" class="strategy-fields">
+                <div class="form-item">
+                    <label for="bollinger_window">Window:</label>
+                    <input type="number" id="bollinger_window" name="bollinger_window">
+                </div>
+            </div>
+            <div id="num_std_dev_field" class="strategy-fields">
+                <div class="form-item">
+                    <label for="num_std_dev">Number of Std. Devs:</label>
+                    <input type="number" id="num_std_dev" name="num_std_dev" step="0.1">
+                </div>
+            </div>
+            <div id="z_score_threshold_field" class="strategy-fields">
+                <div class="form-item">
+                    <label for="z_score_threshold">Z-score Threshold:</label>
+                    <input type="number" id="z_score_threshold" name="z_score_threshold" step="0.1">
+                </div>
+            </div>
+
+            <div id="rsi_window_field" class="strategy-fields">
+                <div class="form-item">
+                    <label for="rsi_window">RSI Window:</label>
+                    <input type="number" id="rsi_window" name="rsi_window">
+                </div>
+            </div>
+            
+            <div id="pairs_window_field" class="strategy-fields">
+                <div class="form-item">
+                    <label for="pairs_window">Pairs Window:</label>
+                    <input type="number" id="pairs_window" name="pairs_window">
+                </div>
+            </div> 
+
+            <div id="mean_window_field" class="strategy-fields">
+                <div class="form-item">
+                    <label for="mean_window">Mean Window:</label>
+                    <input type="number" id="mean_window" name="mean_window">
+                </div>
+            </div>
+            <div id="donchian_window_field" class="strategy-fields">
+                <div class="form-item">
+                    <label for="donchian_window">Donchian Window:</label>
+                    <input type="number" id="donchian_window" name="donchian_window">
+                </div>
+            </div>
+            <div id="trend_window_field" class="strategy-fields">
+                <div class="form-item">
+                    <label for="trend_window">Trend Window:</label>
+                    <input type="number" id="trend_window" name="trend_window">
+                </div>
+            </div>
+            <div class="button-container">
+                <button type="submit">Backtest</button>
+            </div>
+        </form>
+    </div>
+    <div class="logo-container">
+        <a href="/">
+            <img src="{{ url_for('static', filename='images/logoV3.png') }}" alt="GammaForge Logo" class="logo">
+        </a>
+    </div>
+    <img src="{{ url_for('static', filename='images/stocktrader.png') }}" class="pic">
+</body>
+</html>

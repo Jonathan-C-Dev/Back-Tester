@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - GammaForge</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+            text-align: center;
+        }
+
+        .navbar {
+            background-color: #ffffff;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 28px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            border-bottom: 2px solid #01b9da;
+        }
+
+        .navbar a {
+            color: rgb(0, 0, 0);
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 0 15px;
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .navbar a:hover {
+            color: #01b9da;
+            transform: translateY(-3px);
+        }
+
+        .logo-container {
+            position: fixed;
+            top: -40px;
+            left: 80px;
+            z-index: 1100;
+        }
+
+        .logo {
+            height: 190px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .content {
+            margin-top: 120px;
+            padding: 20px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            background: white;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 30px;
+            opacity: 0; /* Initially hidden */
+            animation: fadeIn 1.5s ease-out forwards;
+        }
+
+        h1 {
+            color: #01b9da;
+        }
+
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .tech-stack {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{{ url_for('backtest') }}">Start Backtesting</a>
+        <a href="{{ url_for('guide') }}">Strategy Guide</a>
+        <a href="{{ url_for('market_data') }}">Market Data</a>
+        <a href="{{ url_for('about') }}">About Us</a>
+    </div>
+    <div class="logo-container">
+        <a href="/">
+            <img src="{{ url_for('static', filename='images/logoV3.png') }}" alt="GammaForge Logo" class="logo">
+        </a>
+    </div>
+
+    <div class="content">
+        <h1>About GammaForge</h1>
+        <p>
+            GammaForge is dedicated to empowering traders and investors with cutting-edge backtesting 
+            tools and real-time market data. Our platform allows users to test strategies with precision, 
+            analyze trends, and make informed decisions.
+        </p>
+        <p>
+            Whether you're a beginner or an experienced trader, our mission is to provide the technology and 
+            insights necessary to navigate the financial markets efficiently.
+        </p>
+    </div>
+
+    <!-- Footer with user name and tech stack -->
+    <div class="footer">
+        Created by Jonathan Cunningham
+    </div>
+    
+    <div class="tech-stack">
+        Built with Python & Flask
+    </div>
+</body>
+</html>

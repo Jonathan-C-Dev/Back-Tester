@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Strategy Backtester - Home</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* Align content to the left */
+            height: 100vh;
+            padding-left: 30px; /* Space from left edge */
+        }
+
+        /* Navigation bar styling */
+        .navbar {
+            background-color: #ffffff;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 28px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            border-bottom: 2px solid #01b9da; /* Blue line under the navbar */
+        }
+
+        .navbar a {
+            color: rgb(0, 0, 0);
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 0 15px;
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .navbar a:hover {
+            color: #01b9da;
+            transform: translateY(-3px);
+        }
+
+        .logo-container {
+            position: fixed;
+            top: -40px;  /* Adjust as needed */
+            left: 80px; /* Adjust as needed */
+            z-index: 1100; /* Ensure it's above other elements */
+        }
+
+        .logo {
+            height: 190px; /* Adjust size as needed */
+        }
+        
+        /* Intro text styling */
+        .intro-text {
+            display: flex;
+            flex-direction: column;
+            margin-top: 120px; /* Adjusted to account for navbar height */
+            padding-left: 20px; /* Padding from the left */
+        }
+
+        h1 {
+            font-size: 80px; /* Increased font size */
+            margin-bottom: 15px; /* Space between title and paragraph */
+            color: #333;
+            max-width: 950px;
+        }
+
+        p {
+            font-size: 22px; /* Increased font size */
+            color: #555;
+            line-height: 1.6; /* More space between lines */
+            max-width: 700px; /* Ensures text wraps neatly */
+        }
+
+        /* Overall body background */
+        .container {
+            width: 100%;
+            height: 100vh;
+            background-color: #f4f4f4;
+            position: relative;
+        }
+
+        /* Fade-in animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .intro-text h1, .intro-text p {
+            opacity: 0; /* Initially hidden */
+            animation: fadeIn 1.5s ease-out forwards;
+        }
+
+        /* Delay paragraph to fade in slightly after the heading */
+        .intro-text p {
+            animation-delay: 0.25s;
+        }
+
+        /* Ensure the container doesn't shift the text */
+        .content-container {
+            position: relative;
+            width: 100%;
+        }
+
+        /* Keep the text exactly where it was */
+        .intro-text {
+            margin-top: 120px; /* Ensures it remains under navbar */
+            padding-left: 20px; /* Keeps it aligned to the left */
+        }
+
+        /* Move the stock chart to the right */
+        .stock-chart {
+            position: absolute;
+            top: 70px; /* Adjust as needed */
+            right: 70px; /* Pushes it to the right edge */
+            max-width: 850px; /* Keeps the image at a good size */
+            height: auto;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{{ url_for('backtest') }}">Start Backtesting</a>
+        <a href="{{ url_for('guide') }}">Strategy Guide</a>
+        <a href="{{ url_for('market_data') }}">Market Data</a>
+        <a href="{{ url_for('about') }}">About Us</a>
+    </div>
+    <div class="logo-container">
+        <a href="/">
+            <img src="{{ url_for('static', filename='images/logoV3.png') }}" alt="GammaForge Logo" class="logo">
+        </a>
+    </div>
+    <div class="content-container">
+        <div class="intro-text">
+            <h1>Where Data Meets Strategy – Optimize Your Trading Performance</h1>
+            <p>Test and analyze trading strategies using historical market data. Choose from various strategies and optimize your trades.</p>
+        </div>
+        <img src="{{ url_for('static', filename='images/StockChartHome.png') }}" alt="Stock Chart" class="stock-chart">
+    </div>
+    
+</body>
+</html>
