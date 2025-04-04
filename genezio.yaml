@@ -1,0 +1,13 @@
+backend:
+    functions:
+        - entry: app.py
+          handler: handler
+          name: function-flask
+          path: .
+          type: httpServer
+    language:
+        name: js
+    path: ./
+name: gammaforge
+region: us-east-1
+yamlVersion: 2
