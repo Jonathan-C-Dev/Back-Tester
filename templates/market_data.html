@@ -14,7 +14,7 @@
             text-align: center;
         }
 
-        /* Navigation bar styling */
+        
         .navbar {
             background-color: #ffffff;
             width: 100%;
@@ -25,7 +25,7 @@
             top: 0;
             left: 0;
             z-index: 1000;
-            border-bottom: 2px solid #01b9da; /* Blue line under the navbar */
+            border-bottom: 2px solid #01b9da;
         }
 
         .navbar a {
@@ -46,13 +46,13 @@
 
         .logo-container {
             position: fixed;
-            top: -40px;  /* Adjust as needed */
-            left: 80px; /* Adjust as needed */
-            z-index: 1100; /* Ensure it's above other elements */
+            top: -40px;
+            left: 80px;
+            z-index: 1100;
         }
 
         .logo {
-            height: 190px; /* Adjust size as needed */
+            height: 190px;
         }
 
         @keyframes fadeIn {
@@ -68,7 +68,7 @@
 
         .text {
             margin-top: 125px;
-            opacity: 0; /* Initially hidden */
+            opacity: 0;
             animation: fadeIn 1.5s ease-out forwards;
         }
 
@@ -150,14 +150,14 @@
         <p>Explore real-time stock market data for trending stocks, top gainers, top losers, and the most active stocks.</p>
     </div>
 
-    <!-- Tabs -->
+    
     <div class="tabs">
         {% for category in stock_data.keys() %}
             <button class="tab-button" onclick="showTab('{{ category }}')">{{ category }}</button>
         {% endfor %}
     </div>
 
-    <!-- Tab Contents -->
+    
     {% for category, stocks in stock_data.items() %}
         <div id="{{ category }}" class="tab-content">
             <h2>{{ category }}</h2>
@@ -186,7 +186,6 @@
             document.getElementById(category).style.display = 'block';
         }
 
-        // Show the first tab by default
         document.addEventListener("DOMContentLoaded", function () {
             document.querySelector(".tab-content").style.display = "block";
         });

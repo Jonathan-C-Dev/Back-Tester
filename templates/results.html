@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Backtest Results - GammaForge</title>
     <style>
-        /* General Styling */
+       
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             margin: 20px;
@@ -28,7 +28,7 @@
             margin-bottom: 20px;
         }
         
-        /* Summary Box */
+        
         .summary-box {
             background: #f9f9f9;
             padding: 15px;
@@ -37,15 +37,15 @@
             font-size: 16px;
             display: flex;
             justify-content: space-between;
-            align-items: center; /* Align items to center vertically */
+            align-items: center;
         }
 
         .summary-box span {
-            flex: 1; /* Allow each span to take equal space */
-            text-align: center; /* Center-align text */
+            flex: 1;
+            text-align: center;
         }
 
-        /* Table Styling */
+        
         .table-container {
             width: 100%;
             overflow-x: auto;
@@ -70,7 +70,7 @@
         tr:nth-child(even) { background: #f8f8f8; }
         tr:hover { background: #e8f6f9; transition: 0.3s; }
 
-        /* Buttons */
+        
         .button {
             display: inline-block;
             padding: 10px 15px;
@@ -96,7 +96,7 @@
             background: #218838;
         }
 
-        /* Floating Back to Top Button */
+        
         .top-button {
             position: fixed;
             bottom: 20px;
@@ -125,7 +125,7 @@
             height: 190px;
         }
 
-        /* Navigation bar styling */
+        
         .navbar {
             background-color: #ffffff;
             width: 100%;
@@ -136,7 +136,7 @@
             top: 0;
             left: 0;
             z-index: 1000;
-            border-bottom: 2px solid #01b9da; /* Blue line under the navbar */
+            border-bottom: 2px solid #01b9da;
         }
 
         .navbar a {
@@ -157,9 +157,9 @@
 
         .logo-container {
             position: fixed;
-            top: -40px;  /* Adjust as needed */
-            left: 80px; /* Adjust as needed */
-            z-index: 1100; /* Ensure it's above other elements */
+            top: -40px;
+            left: 80px;
+            z-index: 1100;
         }
     </style>
 </head>
@@ -178,30 +178,26 @@
     <div class="container">
         <h1>Backtest Results</h1>
 
-        <!-- Summary Box -->
+        
         <div class="summary-box">
             <span><strong>Strategy:</strong> {{ strategy }}</span>
             <span><strong>Percent Return:</strong> {{ percent_return }}%</span>
             <span><strong>Strategy Success Rate:</strong> {{ success_rate }}%</span>
         </div>
 
-        <!-- Table -->
         <div class="table-container">
             {{ results|safe }}
         </div>
 
-        <!-- Download & Back Buttons -->
         <div class="links">
             <a href="{{ url_for('backtest') }}" class="button backtest">← Back to Backtesting</a>
             <a href="#" class="button download" onclick="downloadResults()">⬇ Download CSV</a>
         </div>
     </div>
 
-    <!-- Floating Back to Top Button -->
     <button class="top-button" onclick="scrollToTop()">⬆</button>
 
     <script>
-        // Show Back to Top Button when scrolling
         window.onscroll = function() {
             let topButton = document.querySelector(".top-button");
             if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
@@ -215,36 +211,28 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Function to download table data as CSV
         function downloadResults() {
             const table = document.querySelector("table");
             let csvContent = "";
-
-            // Loop through each row of the table
             for (let i = 0; i < table.rows.length; i++) {
                 let row = table.rows[i];
                 let rowData = [];
 
-                // Loop through each cell in the row
                 for (let j = 0; j < row.cells.length; j++) {
-                    rowData.push(row.cells[j].innerText); // Get cell content
+                    rowData.push(row.cells[j].innerText);
                 }
 
-                // Join the row data with commas and add it to the CSV content
                 csvContent += rowData.join(",") + "\n";
             }
 
-            // Create a Blob from the CSV string
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-
-            // Create a download link
             const link = document.createElement("a");
             if (link.download !== undefined) {
                 const url = URL.createObjectURL(blob);
                 link.setAttribute("href", url);
                 link.setAttribute("download", "backtest_results.csv");
                 document.body.appendChild(link);
-                link.click();  // Simulate a click to download the file
+                link.click();
                 document.body.removeChild(link);
             }
         }

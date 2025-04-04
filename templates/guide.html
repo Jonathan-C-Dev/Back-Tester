@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trading Strategy Guide - GammaForge</title>
     <style>
-        /* General Styling */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             margin: 0;
@@ -21,7 +20,6 @@
             text-align: center;
         }
 
-        /* Navigation bar styling */
         .navbar {
             background-color: #ffffff;
             width: 100%;
@@ -32,7 +30,7 @@
             top: 0;
             left: 0;
             z-index: 1000;
-            border-bottom: 2px solid #01b9da; /* Blue line under the navbar */
+            border-bottom: 2px solid #01b9da;
         }
 
         .navbar a {
@@ -53,13 +51,13 @@
 
         .logo-container {
             position: fixed;
-            top: -40px;  /* Adjust as needed */
-            left: 80px; /* Adjust as needed */
-            z-index: 1100; /* Ensure it's above other elements */
+            top: -40px;
+            left: 80px;
+            z-index: 1100;
         }
 
         .logo {
-            height: 190px; /* Adjust size as needed */
+            height: 190px;
         }
         
 
@@ -73,14 +71,13 @@
             font-size: 18px;
             margin-bottom: 60px;
             color: #555;
-            line-height: 1.6; /* Ensures more readable line spacing */
+            line-height: 1.6;
         }
 
         .description p {
-            margin-bottom: 20px; /* Adds space between paragraphs */
+            margin-bottom: 20px;
         }
 
-        /* Fade-in animation */
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -92,14 +89,12 @@
             }
         }
 
-        /* Apply fade-in animation to both h1 and p elements inside .intro-text */
         .intro-text h1,
         .intro-text p {
-            opacity: 0; /* Initially hidden */
+            opacity: 0; 
             animation: fadeIn 1.5s ease-out forwards;
         }
-
-        /* Delay paragraph to fade in slightly after the heading */
+        
         .intro-text p {
             animation-delay: 0.25s;
         }
@@ -107,8 +102,8 @@
 
         .strategy-grid {
             display: grid;
-            grid-template-columns: 1fr;  /* Ensure one card per row */
-            gap: 100px;  /* Reduced gap to make the cards more compact */
+            grid-template-columns: 1fr;
+            gap: 100px;
         }
 
         .strategy-card {
@@ -118,8 +113,8 @@
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             text-align: left;
-            width: 1100px;  /* Fixed width for the cards */
-            margin: 0 auto;  /* Center the cards horizontally */
+            width: 1100px;
+            margin: 0 auto;
         }
 
 
