@@ -26,7 +26,6 @@ def get_stock_data(ticker, start_date, end_date, interval='1d'):
     stock = yf.Ticker(ticker)
     data = stock.history(start=start_date, end=end_date, interval=interval)
     
-    # Reset index to make 'Date' a column
     data.reset_index(inplace=True)
     
     return data
@@ -78,7 +77,6 @@ def calculate_macd(df):
 # - Buy Signal: When the price is significantly below the mean.
 # - Sell Signal: When the price is significantly above the mean.
 def mean_reversion(df, ticker, window, z_score_threshold, start_date):
-    # Download historical data for the past year
     reference_date = pd.to_datetime(start_date)
     one_year_ago = reference_date - timedelta(days=365)
     end_date = reference_date + timedelta(days=1)
@@ -102,7 +100,6 @@ def mean_reversion(df, ticker, window, z_score_threshold, start_date):
 # - Buy Signal: When RSI is below 30 (oversold).
 # - Sell Signal: When RSI is above 70 (overbought).
 def calculate_rsi(df, ticker, window, start_date):
-    # Download historical data (enough for RSI calculation)
     reference_date = pd.to_datetime(start_date)
     one_year_ago = reference_date - timedelta(days=365)
     end_date = reference_date + timedelta(days=1)
@@ -134,7 +131,6 @@ def calculate_rsi(df, ticker, window, start_date):
 # - Buy Signal: When the Z-Score is less than -2.
 # - Sell Signal: When the Z-Score is greater than 2.
 def pairs_trading(df, ticker1, ticker2, window, z_score_threshold, start_date):
-    # Download historical data for both tickers
     reference_date = pd.to_datetime(start_date)
     one_year_ago = reference_date - timedelta(days=365)
     end_date = reference_date + timedelta(days=1)
@@ -163,7 +159,6 @@ def pairs_trading(df, ticker1, ticker2, window, z_score_threshold, start_date):
 # - Buy Signal: When the trend is up.
 # - Sell Signal: When the trend is down.
 def trend_following(df, ticker, window, start_date):
-    # Download historical data for the past year
     reference_date = pd.to_datetime(start_date)
     one_year_ago = reference_date - timedelta(days=365)
     end_date = reference_date + timedelta(days=1)
@@ -188,7 +183,6 @@ def trend_following(df, ticker, window, start_date):
 # - Buy Signal: When the price breaks above the upper channel.
 # - Sell Signal: When the price breaks below the lower channel.
 def donchian_channel(df, ticker, window, end_date):
-    # Fetch historical data for the past 365 days from end_date
     reference_date = pd.to_datetime(end_date)
     one_year_ago = reference_date - timedelta(days=365)
     historical_data = yf.Ticker(ticker).history(start=one_year_ago, end=reference_date, interval="1d")
@@ -236,7 +230,6 @@ def resolve_ticker(company_name):
         str: Ticker symbol if found, otherwise error message
     """
     try:
-        # Yahoo Finance uses a different endpoint for search
         url = f"https://query2.finance.yahoo.com/v1/finance/search?q={company_name}"
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
@@ -244,18 +237,14 @@ def resolve_ticker(company_name):
         
         response = requests.get(url, headers=headers)
         data = response.json()
-        
-        # Parse the search results
+    
         if 'quotes' in data and data['quotes']:
-            # Filter for equity securities
             equity_results = [quote for quote in data['quotes'] 
                               if 'quoteType' in quote and quote['quoteType'] == 'EQUITY']
             
             if equity_results:
-                # Return the first equity ticker found
                 return equity_results[0]['symbol']
             elif data['quotes']:
-                # If no equity found but other results exist
                 return data['quotes'][0]['symbol']
         
         return "Ticker not found"
@@ -275,57 +264,38 @@ def calculate_percent_return(df, initial_capital=10000, position_size=1.0):
     Returns:
     float: Percent return on initial investment
     """
-    # Initialize capital
+    
     capital = initial_capital
     
-    # Process each row in the dataframe
+    
     for i in range(len(df)):
-        # Get values from the current row
         row = df.iloc[i]
         
-        # Extract the buy and sell signals (last two columns)
         columns = df.columns.tolist()
         buy_signal_col = columns[-2]
         sell_signal_col = columns[-1]
         
-        # Get the signals
         buy_signal = row[buy_signal_col]
         sell_signal = row[sell_signal_col]
-        
-        # Get open and close prices
+
         open_price = row['Open']
         close_price = row['Close']
-        
-        # Skip if both signals are the same
+
         if buy_signal == sell_signal:
             continue
             
-        # Calculate position size for this trade
         available_capital = capital * position_size
         
-        # Case 1: Sell signal is True and Buy signal is False (shorting)
         if sell_signal and not buy_signal:
-            # Calculate number of shares based on open price
             shares = available_capital / open_price
-            
-            # Calculate profit/loss: selling at open, buying back at close
             trade_profit = shares * (open_price - close_price)
-            
-            # Update capital
             capital += trade_profit
-                
-        # Case 2: Buy signal is True and Sell signal is False (going long)
+
         elif buy_signal and not sell_signal:
-            # Calculate number of shares based on open price
             shares = available_capital / open_price
-            
-            # Calculate profit/loss: buying at open, selling at close
             trade_profit = shares * (close_price - open_price)
-            
-            # Update capital
             capital += trade_profit
-    
-    # Calculate percent return
+
     percent_return = ((capital / initial_capital) - 1) * 100
     
     return round(percent_return, 3)
@@ -340,53 +310,40 @@ def calculate_success_rate(df):
     Returns:
     float: Success rate as a percentage (successful trades / total trades * 100)
     """
-    # Initialize counters
     successful_trades = 0
     trade_count = 0
-    
-    # Process each row in the dataframe
+
     for i in range(len(df)):
-        # Get values from the current row
         row = df.iloc[i]
         
-        # Extract the buy and sell signals (last two columns)
         columns = df.columns.tolist()
         buy_signal_col = columns[-2]
         sell_signal_col = columns[-1]
         
-        # Get the signals
         buy_signal = row[buy_signal_col]
         sell_signal = row[sell_signal_col]
         
-        # Get open and close prices
         open_price = row['Open']
         close_price = row['Close']
         
-        # Skip if both signals are the same
         if buy_signal == sell_signal:
             continue
             
-        # Case 1: Sell signal is True and Buy signal is False (shorting)
         if sell_signal and not buy_signal:
             trade_count += 1
-            # Success if close price < open price (price went down)
             if close_price < open_price:
                 successful_trades += 1
-                
-        # Case 2: Buy signal is True and Sell signal is False (going long)
+ 
         elif buy_signal and not sell_signal:
             trade_count += 1
-            # Success if close price > open price (price went up)
             if close_price > open_price:
                 successful_trades += 1
     
-    # Calculate success rate
     if trade_count > 0:
         success_rate = (successful_trades / trade_count) * 100
     else:
         success_rate = 0
-        
-    # Return the success rate rounded to 2 decimal places
+
     return round(success_rate, 2)
 
 
@@ -425,8 +382,6 @@ def backtest():
         return render_template('index.html')
     
     strategy = request.form.get('strategy').upper()
-
-    # Extract form data
     ticker_input = request.form['ticker']
     start_date = request.form['start_date']
     end_date = request.form['end_date']
@@ -482,7 +437,6 @@ def backtest():
         return render_template('results.html', results=df.to_html(), strategy=strategy, success_rate=success_rate, percent_return=percent_return)
 
     except Exception as e:
-        # Handle any other exceptions
         app.logger.error(f"Error: {str(e)}")
         return "An error occurred. Please try again later."
 
@@ -490,7 +444,6 @@ def backtest():
 @app.route('/guide')
 def guide():
     def split_description_into_paragraphs(description):
-        # Split the description by two newlines and wrap each part in <p> tags
         paragraphs = description.split('\n\n')
         return ''.join(f'<p>{p}</p>' for p in paragraphs)
     
@@ -577,16 +530,15 @@ def guide():
         }
     ]
     
-    # Process each strategy's description before rendering it
     for strategy in strategies:
         strategy['description'] = split_description_into_paragraphs(strategy['description'])
     
     return render_template('guide.html', strategies=strategies)
 
 stock_data_cache = {}
-last_updated = None  # Store last update timestamp
+last_updated = None
 
-# Selenium WebDriver options
+
 options = webdriver.ChromeOptions()
 options.add_argument("--headless")
 options.add_argument("--disable-gpu")
@@ -606,7 +558,7 @@ def get_stock_list(url):
     driver.get(url)
 
     stock_data = []
-    rows = driver.find_elements(By.XPATH, '//table//tr')[1:11]  # Get first 10 rows (skip header)
+    rows = driver.find_elements(By.XPATH, '//table//tr')[1:11]
 
     for row in rows:
         cols = row.find_elements(By.TAG_NAME, 'td')
@@ -630,13 +582,11 @@ def update_stock_data():
 
     while True:
         try:
-            # Get new stock data
             new_data = {category: get_stock_list(url) for category, url in urls.items()}
             stock_data_cache = new_data
-            last_updated = datetime.now()  # Update timestamp
+            last_updated = datetime.now()
             print(f"Stock data updated at {last_updated.strftime('%Y-%m-%d %H:%M:%S')}")
 
-            # Calculate time until next midnight
             now = datetime.now()
             next_update = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
             sleep_time = (next_update - now).total_seconds()
@@ -644,16 +594,16 @@ def update_stock_data():
 
         except Exception as e:
             print("Error updating stock data:", e)
-            sleep_time = 86400  # Try again in 24 hours if an error occurs
+            sleep_time = 86400
 
-        time.sleep(sleep_time)  # Sleep until next update
+        time.sleep(sleep_time)
 
 @app.route('/market_data')
 def market_data():
     """Serve the cached stock data instantly."""
     return render_template('market_data.html', stock_data=stock_data_cache, last_updated=last_updated)
 
-# Start the background thread when the app runs
+
 threading.Thread(target=update_stock_data, daemon=True).start()
 
 
